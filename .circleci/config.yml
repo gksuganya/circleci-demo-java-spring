@@ -61,8 +61,8 @@ jobs:
       # This will be empty for all nodes except the first one
       - store_artifacts:
           path: build/libs
- Build-Push-Image-Docker:
-   description: Build and push image to Google Container Registry
+  Build-Push-Image-Docker:
+    description: Build and push image to Google Container Registry
    machine: true
    steps:
      - checkout
@@ -75,21 +75,27 @@ jobs:
          tag: "v2"
 
     
- deploy:
-   description: Deploy application to Google Kubernetes Engine
-   machine: true
-   steps:
-     # Install `gcloud` and `kubectl` if not already installed.
-     - gcp-gke/install
-     # Initialize the `gcloud` CLI.
-     - gcp-gke/init
-     # Update a deployment's Docker image.
-     - gcp-gke/rollout-image:
-         deployment: circle-ci-cluster
-         container: java-sample-app
-         image: gcr.io/zt-datalake-poc/circle-gke:v3
+  deploy:
+    description: Deploy application to Google Kubernetes Engine
+    machine: true
+    steps:
+      # Install `gcloud` and `kubectl` if not already installed.
+      - gcp-gke/install
+      # Initialize the `gcloud` CLI.
+      - gcp-gke/init
+      # Update a deployment's Docker image.
+      - gcp-gke/rollout-image:
+          deployment: circle-ci-cluster
+          container: java-sample-app
+          image: gcr.io/zt-datalake-poc/circle-gke:v3
 workflows:
   version: 2
   workflow:
     jobs:
     - build
+    - Build-Push-Image-Docker:
+         requires:
+           - build
+    - deploy:
+         requires:
+           - Build-Push-Image-Docker
