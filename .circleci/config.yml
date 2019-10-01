@@ -63,16 +63,16 @@ jobs:
           path: build/libs
   Build-Push-Image-Docker:
     description: Build and push image to Google Container Registry
-   machine: true
-   steps:
-     - checkout
-     - gcr/gcr-auth
-     - gcr/build-image:
-         image: circle-gke
-         tag: "v2"
-     - gcr/push-image:
-         image: circle-gke
-         tag: "v2"
+    machine: true
+    steps:
+      - checkout
+      - gcr/gcr-auth
+      - gcr/build-image:
+          image: circle-gke
+          tag: "v2"
+      - gcr/push-image:
+          image: circle-gke
+          tag: "v2"
 
     
   deploy:
